@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Whoc Shop</title>
+  <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700&amp;subset=cyrillic" rel="stylesheet">
+  <link rel="stylesheet" href="../static/css/normalize.css">
+  <link rel="stylesheet" href="../static/css/header_and_footer.css">
+</head>
+
+<body>
+    {% extends "index.html" %}
+
+    {% block header %}
+    <nav class="main-navigation">
+        <div class="main-navigation-wrapper">
+        <div class="container">
+            <ul class="site-navigation">
+            <li><a href="info.html">Информация</a></li>
+            <li><a href="../templates/test.html">Новости</a></li>
+            <li><a href="prices.html">Прайс-лист</a></li>
+            <li><a href="shop.html">Магазин</a></li>
+            <li><a href="contacts.html">Контакты</a></li>
+            </ul>
+            <ul class="user-navigation">
+            <li><a class="login-link" href="form.html">Вход</a></li>
+            </ul>
+        </div>
+        </div>
+    </nav>
+    <a class="main-header-logo" href="#">
+          <img src="../static/img/main_logo.jpg" alt="WHOC Shop logo" width="410" height="255">
+    </a>
+    {% endblock %}
+    {% block footer %}
+    <div class="main-footer">
+        <div class="container">
+          <address class="footer-address">
+            Барбершоп «Бородинский» <br>
+            Адрес: Г. Санкт-Петербург, ул. Б. Конюшенная, Д. 19/8 <br>
+            <a href="map.html">Как нас найти?</a> <br>
+            Телефон: <a href="tel:+74956660266">+7 (495) 666-02-66</a>
+          </address>
+
+          <div class="footer-copyright">
+            <b>Разработано:</b>
+            <a class="button" href="https://htmlacademy.ru/">HTML Academy</a>
+          </div>
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>
