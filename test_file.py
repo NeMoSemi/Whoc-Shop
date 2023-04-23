@@ -4,14 +4,17 @@ from jinja2 import FileSystemLoader, Environment
 from data import db_session
 
 app = Flask(__name__, template_folder='templates')
+file_loader = FileSystemLoader('templates')
+env = Environment(loader=file_loader)
 
+template = env.get_template('header_and_footer.html')
+out = template.render()
 
 @app.route('/')
 @app.route('/index')
 def index():
-    user = "Ученик Яндекс.Лицея"
-    return render_template('index.html', title='WHOC Shop',
-                           username=user)
+    # user = "Ученик Яндекс.Лицея"
+    return template.render()
 
 
 if __name__ == '__main__':
