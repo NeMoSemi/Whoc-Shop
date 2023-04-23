@@ -12,9 +12,20 @@ out = template.render()
 
 @app.route('/')
 @app.route('/index')
+@app.route('/templates/index.html')
 def index():
     # user = "Ученик Яндекс.Лицея"
     return template.render()
+
+
+@app.route('/templates/creators.html')
+def creators():
+    return render_template('creators.html', title='Creators')
+
+
+@app.route('/templates/about_us.html')
+def about_us():
+    return render_template('about_us.html', title='About us')
 
 
 if __name__ == '__main__':
