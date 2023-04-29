@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Каталог</title>
+    <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700&amp;subset=cyrillic" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/normalize.css">
+    <link rel="stylesheet" href="../static/css/style.min.css">
+</head>
+
+<body class="inner-page">
+
+    <nav class="main-navigation">
+        <div class="main-navigation-wrapper">
+        <div class="container">
+            <ul class="site-navigation">
+                <li><a href="/">
+                    <img src="../static/img/main_logo_white.jpg" alt="WHOC Shop logo" width="40" height="40"></a></li>
+                <li><a href="#">Новости</a></li>
+                <li><a href="../templates/about_us.html">О сайте</a></li>
+                <li><a href="../templates/creators.html">О авторах проекта</a></li>
+            </ul>
+            <ul class="user-navigation">
+          {% if current_user.is_authenticated %}
+              <a class="btn btn-primary " href="/">{{ current_user.name }}</a>
+              <a class="login-link" href="/logout">Выход</a>
+          {% else %}
+            <p>
+              <a class="btn btn-primary " href="/register">Зарегистрироваться</a>
+              <li><a class="login-link" href="/login">Вход</a></li>
+            </p>
+          {% endif %}
+        </ul>
+        </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            
+            <h1 class="page-title">{{ productTitle }}</h1>
+            <ul class="breadcrumbs">
+                <li><a href="/">Главная</a></li>
+                <li class="breadcrumbs-current">{{ productTitle }}</li>
+            </ul>
+
+            <div class="catalog-columns">
+                <section class="product-photos">
+                    <h2 class="visually-hidden">Изображения товара</h2>
+                    <p class="product-photo-full">
+                        <img src="{{ image1 }}" alt="Главное изображение товара" width="460" height="498">
+                    </p>
+                    <ul class="product-photo-preview">
+                        <li><img src="{{ image2 }}" alt="Доп фото 1" width="140" height="149"></li>
+                        <li><img src="{{ image3 }}" alt="Доп фото 2" width="140" height="149"></li>
+                        <li><img src="{{ image4 }}" alt="Доп фото 3" width="140" height="149"></li>
+                    </ul>
+                </section>
+
+                <section class="product-description">
+                    <h2 class="visually-hidden">Описание товара</h2>
+                    <div class="product-info">
+                        <p class="product-status">Есть в наличии</p>
+                        <p class="product-article">Тип товара: {{ type }}</p>
+                    </div>
+                    <p class="product-text">{{ about }}</p>
+                    <p class="product-price">
+                        <b>{{ cost }}</b>
+                        <a class="button" href="#">Купить</a>
+                    </p>
+                    <!--<h3>Описание:</h3>
+                    <ul class="product-set-list">
+                        <li> {{ about1 }} </li>
+                        <li> {{ about2 }} </li>
+                        <li> {{ about3 }} </li>
+                        <li> {{ about4 }} </li>
+                        <li> {{ about5 }} </li>
+                    </ul>-->
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <div class="main-footer">
+        <div class="container">
+          <address class="footer-address">
+            Магазин муз. инструментов - Whoc-shop <br>
+            Адрес: Улица Пушкина, дом Колотушкина <br>
+            <a href="map.html">Как нас найти?</a> <br>
+            Телефон: <a href="tel:88005553535">8 (800) 555-35-35</a>
+          </address>
+    
+          <div class="footer-copyright">
+            <b>Разработано:</b>
+            <a class="button" href="templates/creators.html">ASStudio</a>
+          </div>
+        </div>
+    </div>
+</body>
+
+</html>

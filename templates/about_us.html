@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WHOC Shop</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/normalize.css">
+    <link rel="stylesheet" href="../static/css/style.min.css">
+    <link rel="stylesheet" href="../static/css/header_and_footer.css">
+    <style>
+      .h1_class {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 3em;
+        margin: 0 0 0.5em;
+        color:black;
+        margin-top: 400px;
+    }
+    .p_class {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.5em;
+        color:black;
+        margin-bottom: 400px;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="info">
+        <nav class="main-navigation">
+            <div class="main-navigation-wrapper">
+            <div class="container">
+                <ul class="site-navigation">
+                    <li><a href="/">
+                        <img src="../static/img/main_logo_white.jpg" alt="WHOC Shop logo" width="40" height="40"></a></li>
+                    <li><a href="#">Новости</a></li>
+                    <li><a href="../templates/about_us.html">О сайте</a></li>
+                    <li><a href="../templates/creators.html">О авторах проекта</a></li>
+                </ul>
+                <ul class="user-navigation">
+          {% if current_user.is_authenticated %}
+              <a class="btn btn-primary " href="/">{{ current_user.name }}</a>
+              <a class="login-link" href="/logout">Выход</a>
+          {% else %}
+            <p>
+              <a class="btn btn-primary " href="/register">Зарегистрироваться</a>
+              <li><a class="login-link" href="/login">Вход</a></li>
+            </p>
+          {% endif %}
+        </ul>
+            </div>
+            </div>
+        </nav>
+      <h1 class="h1_class">WHOC Shop</h1>
+      <p class="p_class">Мы предлагаем широкий выбор качественных товаров по доступным ценам.</p>
+      <div class="main-footer">
+        <div class="container">
+          <address class="footer-address">
+            Магазин муз. инструментов - Whoc-shop <br>
+            Адрес: Г. Моква, Красная площадь, Д. 9 <br>
+            <a href="map.html">Как нас найти?</a> <br>
+            Телефон: <a href="tel:88005553535">8 (800) 555-35-35</a>
+          </address>
+    
+          <div class="footer-copyright">
+            <b>Разработано:</b>
+            <a class="button" href="templates/creators.html">ASStudio</a>
+          </div>
+        </div>
+    </div>
+    </div>
+  </body>
+</html>
