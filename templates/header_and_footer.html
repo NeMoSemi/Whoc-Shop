@@ -4,19 +4,29 @@
     <div class="main-navigation-wrapper">
     <div class="container">
         <ul class="site-navigation">
-            <li><a href="../templates/index.html">
+            <li><a href="/">
                 <img src="../static/img/main_logo_white.jpg" alt="WHOC Shop logo" width="40" height="40"></a></li>
             <li><a href="#">Новости</a></li>
             <li><a href="../templates/about_us.html">О сайте</a></li>
             <li><a href="../templates/creators.html">О авторах проекта</a></li>
         </ul>
         <ul class="user-navigation">
-        <li><a class="login-link" href="form.html">Вход</a></li>
+          {% if current_user.is_authenticated %}
+              <a class="btn btn-primary " href="/">{{ current_user.name }}</a>
+              <a class="login-link" href="/logout">Выход</a>
+          {% else %}
+            <p>
+              <a class="btn btn-primary " href="/register">Зарегистрироваться</a>
+              <li><a class="login-link" href="/login">Вход</a></li>
+            </p>
+          {% endif %}
+        </ul>
+        <li><a class="login-link" href="/login">Вход</a></li>
         </ul>
     </div>
     </div>
 </nav>
-<a class="main-header-logo" href="../templates/index.html">
+<a class="main-header-logo" href="./">
       <img src="../static/img/main_logo.jpg" alt="WHOC Shop logo" width="410" height="255">
 </a>
 {% endblock %}
@@ -24,15 +34,15 @@
 <div class="main-footer">
     <div class="container">
       <address class="footer-address">
-        Барбершоп «Бородинский» <br>
-        Адрес: Г. Санкт-Петербург, ул. Б. Конюшенная, Д. 19/8 <br>
+        Магазин муз. инструментов - Whoc-shop <br>
+        Адрес: Там не знаю где <br>
         <a href="map.html">Как нас найти?</a> <br>
-        Телефон: <a href="tel:+74956660266">+7 (495) 666-02-66</a>
+        Телефон: <a href="tel:88005553535">8 (800) 555-35-35</a>
       </address>
 
       <div class="footer-copyright">
         <b>Разработано:</b>
-        <a class="button" href="https://htmlacademy.ru/">HTML Academy</a>
+        <a class="button" href="templates/creators.html">ASStudio</a>
       </div>
     </div>
 </div>

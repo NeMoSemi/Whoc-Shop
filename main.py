@@ -1,18 +1,25 @@
-from flask import Flask, request, url_for, render_template
-# from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+import flask_login
+from flask import Flask, request, render_template, make_response, session, redirect
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask_wtf import FlaskForm
 from jinja2 import FileSystemLoader, Environment
-from data.products import Products
+from werkzeug.security import generate_password_hash, check_password_hash
+from wtforms import EmailField, PasswordField, BooleanField, SubmitField, StringField, TextAreaField
+from wtforms.validators import DataRequired
 
 from data import db_session
+from data.products import Products
+from data.users import Users
 
 app = Flask(__name__, template_folder="templates")
-# login_manager = LoginManager()
-# login_manager.init_app(app)
+app.config["SECRET_KEY"] = 'never-gonna-give-you-up'
+login_manager = LoginManager()
+login_manager.init_app(app)
 file_loader = FileSystemLoader("templates")
 env = Environment(loader=file_loader)
 
-template = env.get_template("header_and_footer.html")
-out = template.render()
+# template = env.get_template("index.html")
+# out = template.render()
 
 
 @app.route("/")
@@ -20,41 +27,46 @@ out = template.render()
 @app.route("/templates/index.html")
 def index():
     previews = []
-    with open("templates/preview_of_item.html", mode="r", encoding="utf-8") as form:
-        form = form.readlines()
-        print(form)
     for i in range(len(items_url)):
         newform = str()
         product = db_sess.query(Products).filter(Products.id == i + 1).first()
-        for j in range(len(form)):
-            if(j == 3):
-                l = '            <img src="'
-                r = '" alt="Превью-фото" width="430" height="430">'
-                x = l + f"../static/img/{product.id}/1.jpg" + r
-                newform += x
-                continue
-            if(j == 8):
-                l = '        <h2>'
-                r = '</h2>'
-                x = l + f"{product.title}" + r
-                newform += x
-                continue
-            if(j == 9):
-                l = '          <a class="contacts-address">'
-                r = '</a>'
-                x = l + f"{product.about}" + r
-                newform += x
-                continue
-            if(j == 10):
-                l = '        <a class="button contacts-button-map" href="'
-                r = '">Перейти к товару</a>'
-                x = l + f"/templates/item{product.id}.html" + r
-                newform += x
-                continue
-            newform += form[j]
-        previews.append(newform)
-    return template.render(previews=previews, title="Название товара", about="Описание")
 
+    return render_template("index.html", previews=previews, title="Название товара",
+                           about="Описание", products=db_sess.query(Products).all())
+
+
+class LoginForm(FlaskForm):
+    email = EmailField('Почта', validators=[DataRequired()])
+    password = PasswordField('Пароль', validators=[DataRequired()])
+    remember_me = BooleanField('Запомнить меня')
+    submit = SubmitField('Войти')
+
+
+class RegisterForm(FlaskForm):
+    email = EmailField('Почта', validators=[DataRequired()])
+    password = PasswordField('Пароль', validators=[DataRequired()])
+    password_again = PasswordField('Повторите пароль', validators=[DataRequired()])
+    name = StringField('Имя пользователя', validators=[DataRequired()])
+    submit = SubmitField('Войти')
+
+    def set_password(self, password):
+        self.hashed_password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.hashed_password, password)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    db_sess = db_session.create_session()
+    return db_sess.query(Users).get(user_id)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
 
 @app.route("/templates/creators.html")
 def creators():
@@ -88,6 +100,53 @@ def item():
                            image3=imgAdress + "3.jpg", image4=imgAdress + "4.jpg")
 
 
+@app.route("/session_test")
+def session_test():
+    visits_count = session.get('visits_count', 0)
+    session['visits_count'] = visits_count + 1
+    return make_response(
+        f"Вы пришли на эту страницу {visits_count + 1} раз")
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        user = db_sess.query(Users).filter(Users.email == form.email.data).first()
+        if user and user.check_password(form.password.data):
+            login_user(user, remember=form.remember_me.data)
+            return redirect("/")
+        return render_template('login.html',
+                               message="Неправильный логин или пароль",
+                               form=form)
+    return render_template('login.html', title='Авторизация', form=form)
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def reqister():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        if form.password.data != form.password_again.data:
+            return render_template('register.html', title='Регистрация',
+                                   form=form,
+                                   message="Пароли не совпадают")
+        db_sess = db_session.create_session()
+        if db_sess.query(Users).filter(Users.email == form.email.data).first():
+            return render_template('register.html', title='Регистрация',
+                                   form=form,
+                                   message="Такой пользователь уже есть")
+        user = Users(
+            name=form.name.data,
+            email=form.email.data
+        )
+        user.set_password(form.password.data)
+        db_sess.add(user)
+        db_sess.commit()
+        return redirect('/login')
+    return render_template('register.html', title='Регистрация', form=form)
+
+
 if __name__ == "__main__":
     db_session.global_init("db/whoc.db")
     db_sess = db_session.create_session()
@@ -95,4 +154,5 @@ if __name__ == "__main__":
     # print(items_url)
     for url in items_url:
         app.add_url_rule(url, view_func=item)
+
     app.run(port=8080, host="127.0.0.1")
