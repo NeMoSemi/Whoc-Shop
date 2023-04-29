@@ -1,5 +1,7 @@
 import telebot
 from telebot import types
+
+from db_functions import add_product
 from telegram.config_telegram import token, know_var, change_var
 
 
@@ -42,15 +44,14 @@ def text_message(message):
                 arg_item.append(downloaded_file)
             if 3 < int(know_var('make_item')) <= 6:
                 arg_item.append(str(message.text))
-            if int(know_var('make_item')) == 8 and message.text.lower() == 'yes':
-                pass #здесь нужно добавить все данные из списка arg_item
             change_var('make_item', str(int(know_var('make_item')) + 1))
             if int(know_var('make_item')) == 7:
                 bot.send_message(message.chat.id, f'Вы уверены что хотите создать новый товар? Убедитесь, что все данные'
                                                   f'указанны верно и в правильном порядке(main_foto, dop_foto_1,'
                                                   f'dop_foto_2, dop_foto_3,name_of_item, description, cost(int).'
                                                   f'Если всё указанно корректно, то напишите yes')
-            if int(know_var('make_item')) == 9:
+            if int(know_var('make_item')) == 8 and message.text.lower() == 'yes':
+                add_product(arg_item)
                 change_var('make_item', '0')
                 arg_item = []
                 change_var('making_item', 'False')
