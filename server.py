@@ -32,7 +32,23 @@ def index():
         product = db_sess.query(Products).filter(Products.id == i + 1).first()
 
     return render_template("index.html", previews=previews, title="Название товара",
-                           about="Описание", products=db_sess.query(Products).all())
+                           about="Описание")
+
+
+@app.route('/edit_user_profile.html', methods=['post', 'get'])
+def edit_user_profile():
+    if current_user.is_authenticated:
+        if request.method == 'POST':
+            about_me1 = request.form.get('aboutme')
+            db_ses = db_session.create_session()
+            user = db_ses.query(Users).filter(Users.id == current_user.get_id()).first()
+            user.about = about_me1
+            db_ses.commit()
+            if about_me1:
+                return redirect("/templates/user.html")
+            else:
+                return redirect("/templates/user.html")
+        return render_template('edit_user.html')
 
 
 class LoginForm(FlaskForm):
@@ -47,6 +63,7 @@ class RegisterForm(FlaskForm):
     password = PasswordField('Пароль', validators=[DataRequired()])
     password_again = PasswordField('Повторите пароль', validators=[DataRequired()])
     name = StringField('Имя пользователя', validators=[DataRequired()])
+    about = TextAreaField("Немного о себе")
     submit = SubmitField('Войти')
 
     def set_password(self, password):
@@ -73,9 +90,14 @@ def creators():
     return render_template("creators.html", title="Creators")
 
 
-@app.route("/templates/about_us.html")
-def about_us():
-    return render_template("about_us.html", title="About us")
+@app.route("/templates/catalog.html")
+def catalog():
+    return render_template("catalog.html", title="Catalog", products=db_sess.query(Products).all())
+
+
+@app.route("/templates/news.html")
+def news():
+    return render_template("news.html", title="News")  # , products=db_sess.query(Products).all())
 
 
 # items_url = ["/templates/item/1.html", "/templates/item/2.html", "/templates/item/3.html"]
@@ -100,6 +122,18 @@ def item():
                            image3=imgAdress + "3.jpg", image4=imgAdress + "4.jpg")
 
 
+@app.route("/templates/user.html")
+def user():
+    if current_user.is_authenticated:
+        cur_user = db_sess.query(Users).filter(Users.name == current_user.name).first()
+        userId = cur_user.id
+        userAbout = "Здесь пока ничего нет"
+        if(cur_user.about):
+            userAbout = cur_user.about
+        print(userId)
+        return render_template("user.html", title="User", userAbout=userAbout, userId=userId)
+
+
 @app.route("/session_test")
 def session_test():
     visits_count = session.get('visits_count', 0)
@@ -120,6 +154,7 @@ def login():
         return render_template('login.html',
                                message="Неправильный логин или пароль",
                                form=form)
+
     return render_template('login.html', title='Авторизация', form=form)
 
 
@@ -138,7 +173,8 @@ def reqister():
                                    message="Такой пользователь уже есть")
         user = Users(
             name=form.name.data,
-            email=form.email.data
+            email=form.email.data,
+            about=form.about.data
         )
         user.set_password(form.password.data)
         db_sess.add(user)

@@ -37,13 +37,13 @@
                 <ul class="site-navigation">
                     <li><a href="/">
                         <img src="../static/img/main_logo_white.jpg" alt="WHOC Shop logo" width="40" height="40"></a></li>
-                    <li><a href="#">Новости</a></li>
-                    <li><a href="../templates/about_us.html">О сайте</a></li>
-                    <li><a href="../templates/creators.html">О авторах проекта</a></li>
+                    <li><a href="../templates/news.html">Новости</a></li>
+                    <li><a href="../templates/catalog.html">Каталог</a></li>
+                    <li><a href="../templates/creators.html">Об авторах проекта</a></li>
                 </ul>
                 <ul class="user-navigation">
           {% if current_user.is_authenticated %}
-              <a class="btn btn-primary " href="/">{{ current_user.name }}</a>
+              <a class="btn btn-primary " href="../templates/user.html">{{ current_user.name }}</a>
               <a class="login-link" href="/logout">Выход</a>
           {% else %}
             <p>
@@ -57,6 +57,7 @@
         </nav>
       <h1 class="h1_class">WHOC Shop</h1>
       <p class="p_class">Мы предлагаем широкий выбор качественных товаров по доступным ценам.</p>
+        {% extends "preview_of_item.html" %}
       <div class="main-footer">
         <div class="container">
           <address class="footer-address">
